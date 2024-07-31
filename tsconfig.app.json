@@ -19,9 +19,18 @@
 
     /* Linting */
     "strict": true,
+    // "strict": {
+    //   "strictNullChecks": true,
+    //   "strictFunctionTypes": true,
+    //   "strictPropertyInitialization": true,
+    //   "strictBindCallApply": true,
+    //   "noImplicitAny": true
+    // },
+    "sourceMap": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["src/**/*", "postcss.config.js", "tailwind.config.js"],
+  "exclude": ["node_modules", "dist"]
 }
