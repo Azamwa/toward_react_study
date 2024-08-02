@@ -1,7 +1,7 @@
-import { PostType } from "../type"
+import { PostType } from "../type";
 
 interface BoardListProps {
-  postList: PostType[]
+  postList: PostType[];
 }
 
 function BoardList({ postList }: BoardListProps) {
@@ -11,9 +11,7 @@ function BoardList({ postList }: BoardListProps) {
         <div className="flex-[1_1_0] flex justify-center items-center">
           <input type="checkbox" />
         </div>
-        <div className="flex-[1_1_0] flex justify-center items-center">
-          No.
-        </div>
+        <div className="flex-[1_1_0] flex justify-center items-center">No.</div>
         <div className="flex-[7_1_0] flex justify-center items-center">
           제목
         </div>
@@ -24,9 +22,16 @@ function BoardList({ postList }: BoardListProps) {
           조회수
         </div>
       </li>
-      {
-        postList.map((post, index) => 
-          <li className="flex h-10 border-b bd-slate-400 hover:cursor-pointer hover:bg-slate-100 text-sm" key={post.key}>
+      {postList.length === 0 ? (
+        <li className="h-10 flex items-center justify-center text-sm border-b">
+          검색된 결과가 없습니다.
+        </li>
+      ) : (
+        postList.map((post, index) => (
+          <li
+            className="flex h-10 border-b bd-slate-400 hover:cursor-pointer hover:bg-slate-100 text-sm"
+            key={post.key}
+          >
             <div className="flex-[1_1_0] flex justify-center items-center">
               <input type="checkbox" />
             </div>
@@ -43,10 +48,10 @@ function BoardList({ postList }: BoardListProps) {
               {post.hit}
             </div>
           </li>
-        )
-      }
+        ))
+      )}
     </ul>
-  )
+  );
 }
 
-export default BoardList
+export default BoardList;
