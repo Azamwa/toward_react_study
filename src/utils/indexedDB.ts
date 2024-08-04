@@ -1,9 +1,9 @@
-import { PostType } from "../type";
+import { PostType } from "./../type";
 
 export const openIndexedDB = <T>(
   method: string,
-  data?: T
-): Promise<PostType[] | void> => {
+  data?: T | string
+): Promise<PostType[] | void | PostType> => {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open("toward99", 1);
 
@@ -29,7 +29,11 @@ export const openIndexedDB = <T>(
 
       switch (method) {
         case "GET":
-          getPostList(boardDB).then(resolve).catch(reject);
+          data == undefined
+            ? getPostList(boardDB).then(resolve).catch(reject)
+            : getPostById(boardDB, data as string)
+                .then(resolve)
+                .catch(reject);
           break;
         case "POST":
           createPost(boardDB, data).then(resolve).catch(reject);
@@ -46,6 +50,14 @@ export const openIndexedDB = <T>(
 const getPostList = (db: IDBObjectStore): Promise<PostType[]> => {
   return new Promise((resolve, reject) => {
     const requestDB = db.getAll();
+    requestDB.onsuccess = () => resolve(requestDB.result);
+    requestDB.onerror = () => reject(new Error("조회를 실패했습니다."));
+  });
+};
+
+const getPostById = (db: IDBObjectStore, data: string): Promise<PostType> => {
+  return new Promise((resolve, reject) => {
+    const requestDB = db.get(data);
     requestDB.onsuccess = () => resolve(requestDB.result);
     requestDB.onerror = () => reject(new Error("조회를 실패했습니다."));
   });
