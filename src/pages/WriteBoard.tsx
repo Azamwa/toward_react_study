@@ -1,8 +1,8 @@
+import { useNavigate } from "react-router-dom";
 import { openIndexedDB } from "../utils/indexedDB";
+import useWriteInput from "../hooks/useWriteInput";
 
 import Title from "../components/Title";
-import { useNavigate } from "react-router-dom";
-import useWriteInput from "../hooks/useWriteInput";
 
 function WriteBoard() {
   const navigator = useNavigate();
@@ -22,12 +22,15 @@ function WriteBoard() {
     const title = titleInput.current.value;
     if (title === "") {
       alert("제목을 입력해주세요.");
+      return;
     }
     if (writer === "") {
       alert("작성자를 입력해주세요.");
+      return;
     }
     if (content.length < 10) {
       alert("10글자이상 작성해주세요.");
+      return;
     }
     openIndexedDB("POST", {
       key: crypto.randomUUID(),

@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 import { PostType } from "../type";
 
 interface BoardListProps {
@@ -5,6 +7,8 @@ interface BoardListProps {
 }
 
 function BoardList({ postList }: BoardListProps) {
+  const navigator = useNavigate();
+
   return (
     <ul className="shadow-sm select-none">
       <li className="flex h-10 border-b bg-slate-200 text-sm">
@@ -30,6 +34,7 @@ function BoardList({ postList }: BoardListProps) {
         postList.map((post, index) => (
           <li
             className="flex h-10 border-b bd-slate-400 hover:cursor-pointer hover:bg-slate-100 text-sm"
+            onClick={() => navigator(`/post/${post.key}`)}
             key={post.key}
           >
             <div className="flex-[1_1_0] flex justify-center items-center">
