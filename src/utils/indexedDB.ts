@@ -1,8 +1,8 @@
 import { PostType } from "./../type";
 
-export const openIndexedDB = <T>(
+export const openIndexedDB = (
   method: string,
-  data?: T | string
+  data?: PostType | string
 ): Promise<PostType[] | void | PostType> => {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open("toward99", 1);
@@ -36,8 +36,14 @@ export const openIndexedDB = <T>(
                 .catch(reject);
           break;
         case "POST":
-          createPost(boardDB, data).then(resolve).catch(reject);
+          createPost(boardDB, data as PostType)
+            .then(resolve)
+            .catch(reject);
           break;
+        case "PATCH":
+          editPost(boardDB, data as PostType)
+            .then(resolve)
+            .catch(reject);
       }
     };
 
@@ -70,10 +76,19 @@ const getPostById = (db: IDBObjectStore, data: string): Promise<PostType> => {
   });
 };
 
-const createPost = <T>(db: IDBObjectStore, data: T): Promise<void> => {
-  return new Promise((resolve, reject) => {
+const createPost = (db: IDBObjectStore, data: PostType): Promise<void> => {
+  return new Promise((_, reject) => {
     const requestDB = db.add(data);
-    requestDB.onsuccess = () => resolve();
     requestDB.onerror = () => reject(new Error("등록을 실패했습니다."));
+  });
+};
+
+const editPost = (db: IDBObjectStore, data: PostType): Promise<void> => {
+  return new Promise((_, reject) => {
+    const requestDB = db.get(data.key);
+    requestDB.onsuccess = () => {
+      db.put(data);
+    };
+    requestDB.onerror = () => reject(new Error("수정을 실패했습니다."));
   });
 };

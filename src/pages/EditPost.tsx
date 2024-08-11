@@ -1,19 +1,25 @@
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { openIndexedDB } from "../utils/indexedDB";
 import useWriteInput from "../hooks/useWriteInput";
 
 import Title from "../components/Title";
 import WriteForm from "../components/WriteForm";
 
-function WriteBoard() {
+import { PostType } from "../type";
+
+function EditPost() {
+  const params = useParams();
   const navigator = useNavigate();
   const { textarea, writerInput, titleInput } = useWriteInput();
+  const [post, setPost] = useState<PostType>();
 
-  const savePost = () => {
+  const editPost = async () => {
     if (
       textarea.current === null ||
       writerInput.current === null ||
-      titleInput.current === null
+      titleInput.current === null ||
+      post === undefined
     ) {
       return;
     }
@@ -33,29 +39,37 @@ function WriteBoard() {
       alert("10글자이상 작성해주세요.");
       return;
     }
-    openIndexedDB("POST", {
-      key: crypto.randomUUID(),
-      title: title.trim(),
+    openIndexedDB("PATCH", {
+      ...post,
       content: content.trim(),
       writer: writer.trim(),
-      hit: 0,
+      title: title.trim(),
     });
-    alert("저장되었습니다.");
-    navigator("/");
+    alert("수정되었습니다.");
+    navigator(`/post/${post.key}`);
   };
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      const res = await openIndexedDB("GET", params.key);
+      setPost(res as PostType);
+    };
+    fetchPost();
+  }, [params.key]);
 
   return (
     <div className="w-144 flex flex-col gap-2 relative">
-      <Title name="글쓰기" goBackButton={true} />
+      <Title name="글 수정" goBackButton={true} />
       <WriteForm
         textarea={textarea}
         titleInput={titleInput}
         writerInput={writerInput}
+        post={post}
       />
       <div className="flex justify-end">
         <button
           className="w-14 px-2 py-1 border border-slate-600 rounded text-slate-600"
-          onClick={savePost}
+          onClick={editPost}
         >
           저장
         </button>
@@ -64,4 +78,4 @@ function WriteBoard() {
   );
 }
 
-export default WriteBoard;
+export default EditPost;

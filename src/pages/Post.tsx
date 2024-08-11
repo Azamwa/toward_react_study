@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { openIndexedDB } from "../utils/indexedDB";
 
 import Title from "../components/Title";
@@ -8,6 +8,7 @@ import { PostType } from "../type";
 
 function Post() {
   const params = useParams();
+  const navigate = useNavigate();
   const [post, setPost] = useState<PostType>();
 
   useEffect(() => {
@@ -27,7 +28,10 @@ function Post() {
       </div>
       <pre className="min-h-40">{post?.content}</pre>
       <div className="flex justify-end">
-        <button className="px-2 py-1 border border-slate-600 text-slate-600 rounded-md">
+        <button
+          className="px-2 py-1 border border-slate-600 text-slate-600 rounded-md"
+          onClick={() => navigate(`/editPost/${params.key}`)}
+        >
           수정
         </button>
       </div>
