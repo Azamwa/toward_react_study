@@ -1,7 +1,9 @@
-import { useParams } from "react-router-dom";
-import Title from "../components/Title";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { openIndexedDB } from "../utils/indexedDB";
+
+import Title from "../components/Title";
+
 import { PostType } from "../type";
 
 function Post() {

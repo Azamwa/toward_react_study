@@ -58,7 +58,14 @@ const getPostList = (db: IDBObjectStore): Promise<PostType[]> => {
 const getPostById = (db: IDBObjectStore, data: string): Promise<PostType> => {
   return new Promise((resolve, reject) => {
     const requestDB = db.get(data);
-    requestDB.onsuccess = () => resolve(requestDB.result);
+    requestDB.onsuccess = () => {
+      const editHitsData: PostType = {
+        ...requestDB.result,
+        hit: requestDB.result.hit + 1,
+      };
+      db.put(editHitsData);
+      resolve(editHitsData);
+    };
     requestDB.onerror = () => reject(new Error("조회를 실패했습니다."));
   });
 };
