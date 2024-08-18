@@ -1,42 +1,37 @@
-import { RefObject } from "react";
-import { PostType } from "../type";
+import { WriteFormType } from "../type";
+import Input from "./Input";
+import Textarea from "./Textarea";
 
 interface WriteFormProps {
-  titleInput: RefObject<HTMLInputElement>;
-  writerInput: RefObject<HTMLInputElement>;
-  textarea: RefObject<HTMLTextAreaElement>;
-  post?: PostType;
+  form: WriteFormType;
+  setForm: <K extends keyof WriteFormType>(
+    key: K,
+    value: WriteFormType[K]
+  ) => void;
 }
 
-function WriteForm({
-  textarea,
-  titleInput,
-  writerInput,
-  post,
-}: WriteFormProps) {
+function WriteForm({ form, setForm }: WriteFormProps) {
   return (
     <>
       <div className="flex gap-2">
-        <input
-          className="flex-[5_1_0] h-8 px-3 border border-slate-600 rounded outline-none text-sm"
-          type="text"
-          ref={titleInput}
-          placeholder="제목"
-          defaultValue={post?.title}
-        />
-        <input
-          className="flex-[1_1_0] h-8 px-3 border border-slate-600 rounded outline-none text-sm"
-          type="text"
-          ref={writerInput}
-          placeholder="작성자"
-          defaultValue={post?.writer}
-        />
+        <div className="flex-[5_1_0]">
+          <Input
+            placeholder="제목"
+            value={form.title}
+            setValue={(value) => setForm("title", value)}
+          />
+        </div>
+        <div className="flex-[1_1_0]">
+          <Input
+            placeholder="작성자"
+            value={form.writer}
+            setValue={(value) => setForm("writer", value)}
+          />
+        </div>
       </div>
-      <textarea
-        className="min-h-40 p-3 border border-slate-600 rounded-md outline-none resize-none"
-        ref={textarea}
-        placeholder="글 적어라"
-        defaultValue={post?.content}
+      <Textarea
+        value={form.content}
+        setValue={(value) => setForm("content", value)}
       />
     </>
   );

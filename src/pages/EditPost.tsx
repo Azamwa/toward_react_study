@@ -1,49 +1,47 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { openIndexedDB } from "../utils/indexedDB";
-import useWriteInput from "../hooks/useWriteInput";
 
 import Title from "../components/Title";
 import WriteForm from "../components/WriteForm";
 
-import { PostType } from "../type";
+import { PostType, WriteFormType } from "../type";
+import useForm from "../hooks/useInputForm";
 
 function EditPost() {
   const params = useParams();
   const navigator = useNavigate();
-  const { textarea, writerInput, titleInput } = useWriteInput();
-  const [post, setPost] = useState<PostType>();
+  const { form, setForm } = useForm<WriteFormType>({
+    content: "",
+    title: "",
+    writer: "",
+  });
+  const [post, setPost] = useState<PostType>({
+    key: params.key ?? "",
+    title: "",
+    writer: "",
+    content: "",
+    hit: 0,
+  });
 
   const editPost = async () => {
-    if (
-      textarea.current === null ||
-      writerInput.current === null ||
-      titleInput.current === null ||
-      post === undefined
-    ) {
-      return;
-    }
-
-    const content = textarea.current.value;
-    const writer = writerInput.current.value;
-    const title = titleInput.current.value;
-    if (title === "") {
+    if (form.title === "") {
       alert("제목을 입력해주세요.");
       return;
     }
-    if (writer === "") {
+    if (form.writer === "") {
       alert("작성자를 입력해주세요.");
       return;
     }
-    if (content.length < 10) {
+    if (form.content.length < 10) {
       alert("10글자이상 작성해주세요.");
       return;
     }
     openIndexedDB("PATCH", {
       ...post,
-      content: content.trim(),
-      writer: writer.trim(),
-      title: title.trim(),
+      content: form.content.trim(),
+      writer: form.writer.trim(),
+      title: form.title.trim(),
     });
     alert("수정되었습니다.");
     navigator(`/post/${post.key}`);
@@ -60,12 +58,7 @@ function EditPost() {
   return (
     <div className="w-144 flex flex-col gap-2 relative">
       <Title name="글 수정" goBackButton={true} />
-      <WriteForm
-        textarea={textarea}
-        titleInput={titleInput}
-        writerInput={writerInput}
-        post={post}
-      />
+      <WriteForm form={form} setForm={setForm} />
       <div className="flex justify-end">
         <button
           className="w-14 px-2 py-1 border border-slate-600 rounded text-slate-600"

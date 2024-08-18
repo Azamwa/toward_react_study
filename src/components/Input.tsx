@@ -1,8 +1,8 @@
 import { ChangeEvent } from "react";
 
 interface InputProps {
-  value: string | number;
-  setValue: (value: string | number) => void;
+  value: string;
+  setValue: (value: string) => void;
   placeholder?: string;
 }
 
@@ -13,6 +13,7 @@ function Input({ value, setValue, placeholder }: InputProps) {
 
   return (
     <input
+      className="h-8 px-3 border border-slate-600 rounded outline-none text-sm"
       type="text"
       value={value}
       onChange={(e) => chagneValue(e)}
